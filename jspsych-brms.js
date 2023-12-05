@@ -233,7 +233,7 @@ jsPsych.plugins["rms"] = (function () {
             fade_out_time: {
                 type: jsPsych.plugins.parameterType.FLOAT,
                 pretty_name: 'Fade out time',
-                default: 1,
+                default: 0,
                 description: "When to start fading out mask. 0 is never."
             },
             fade_in_time: {
@@ -387,6 +387,7 @@ jsPsych.plugins["rms"] = (function () {
 
                 // Check if it's time to switch between stimulus and mask
                 if (masked && ((current_time - start_mask_time) >= mask_duration)) {
+					console.log('stim,'+current_time);
                     if (current_time - start_time >= end_fade_in) {
                         stimulus_opacity = stimulus_max_opacity;
                     } else {
@@ -398,6 +399,7 @@ jsPsych.plugins["rms"] = (function () {
                     start_stimulus_time = current_time;
                     masked = false;
                 } else if (!masked && ((current_time - start_stimulus_time) >= stimulus_duration)) {
+					console.log('mond,'+current_time);
                     if (current_time - start_time >= start_fade_out) {
                         const fade_progress = ((current_time - start_time) - start_fade_out) / Number(trial.fade_out_time);
                         mondrian_opacity = (mondrian_max_opacity * (1 - fade_progress)) + (mondrian_min_opacity * fade_progress);
