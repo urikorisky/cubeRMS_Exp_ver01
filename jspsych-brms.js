@@ -384,7 +384,6 @@ jsPsych.plugins["rms"] = (function () {
             function run_animation_loop() {
                 // Calculate time elapsed since the last animation frame
                 current_time = new Date().getTime();
-
                 // Check if it's time to switch between stimulus and mask
                 if (masked && ((current_time - start_mask_time) >= mask_duration)) {
 					//console.log('stim,'+current_time);
@@ -398,6 +397,9 @@ jsPsych.plugins["rms"] = (function () {
                     fixation.draw(frame_context, frame_canvas);
                     start_stimulus_time = current_time;
                     masked = false;
+					if(debug_logFlips){
+						logTest_flips += 'stim,'+current_time+'\r\n';
+					}
                 } else if (!masked && ((current_time - start_stimulus_time) >= stimulus_duration)) {
 					//console.log('mond,'+current_time);
                     if (current_time - start_time >= start_fade_out) {
@@ -412,7 +414,11 @@ jsPsych.plugins["rms"] = (function () {
                     fixation.draw(frame_context, frame_canvas);
                     start_mask_time = current_time;
                     masked = true;
+					if(debug_logFlips){
+						logTest_flips += 'mond,'+current_time+'\r\n';
+					}
                 }
+
 
                 animation = window.requestAnimationFrame(run_animation_loop);
             }
@@ -478,6 +484,11 @@ jsPsych.plugins["rms"] = (function () {
             };
 
             let start_trial = function () {
+				if(debug_logFlips){
+					logTest_flips += 'newTrial,'+current_time+'\r\n';
+				}
+				
+				
                 // Start the response listener
                 if (JSON.stringify(trial.choices) !== JSON.stringify(["none"])) {
                     let keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({

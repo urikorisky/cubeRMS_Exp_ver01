@@ -18,6 +18,16 @@
 		let ts = new Date(Date.now());
 		ts = ts.toUTCString().replaceAll(' ','_').replaceAll(':','-').replace(',','');
 	
+	// define debug state, which can be changed by the URL parameters:
+		let debug_logFlips = false;
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		if(urlParams.has('dbg_logTimes')){
+			debug_logFlips = true;
+			logTest_flips = 'Flip times for RMS experiment, timestamp ' + ts + '\r\n';
+		}
+		
+	
         function download(filename, text) {
             var element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -86,7 +96,7 @@
 			prompt: "<p>Check fullscreen (F11). Press space to begin.</p>"
 		}
 		
-		if(subjID){
+		if(subjID && !debug_logFlips){
 		full_timeline.push(dem_ques_open);
 		full_timeline.push(dem_ques_binary);
 		}
@@ -121,6 +131,9 @@
             on_finish: function () {
 				
                 download("data_"+subjID+"_"+ts+".csv", jsPsych.data.get().csv());
+				if(debug_logFlips){
+					download("flipTimesLog_"+subjID+"_"+ts+".csv",logTest_flips);
+				}
             },
             on_trial_start: function () {
                 console.log("start")
